@@ -4,23 +4,25 @@ import android.app.Application
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.seekandlog.FileUtils
 import com.example.seekandlog.objs.AppLog
 import com.example.seekandlog.objs.SelectableAppData
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class MonitorViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
-        const val DELAY_BETWEEN_LOOPS = 3000L
-        const val EVENTS_DETECTION_INTERVAL = 1000 * 1000
+        const val POLLING_DELAY = 2000L   // acceptable delay for polling
+        const val EVENTS_DETECTION_INTERVAL = 1000 * 1000 // interval (in the past)
     }
 
     var selectedApps: List<SelectableAppData>? = null
-    var lastLogs = MutableLiveData<List<AppLog>>()
+    var lastLogs = MutableStateFlow<List<AppLog>>(mutableListOf())
+    var lastAppInForeground: AppLog? = null
 
     private val appPackageNames: List<String?>
         get() = selectedApps?.map { it.packageName } ?: listOf()
@@ -31,14 +33,15 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
             selectedApps?.get(0)?.let {
                 while (true) {
                     detectForegroundApps(usageStatsManager)
-                    delay(DELAY_BETWEEN_LOOPS)
+                    delay(POLLING_DELAY)
                 }
             }
         }
     }
 
-    fun needMonitor(packageName: String): Boolean =
-        selectedApps?.any { it.packageName == packageName } == true
+    fun getLogs() {
+        lastLogs.value = FileUtils.readLogsFromFile(getApplication())
+    }
 
     // extract events (using hashmap to avoid repetitions)
     private fun getEventsMap(usageStatsManager: UsageStatsManager): Map<String, UsageEvents.Event> {
@@ -58,22 +61,30 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
         return rt
     }
 
+    // save only when app is first time opening
     private fun detectForegroundApps(usageStatsManager: UsageStatsManager) {
         val logsFound = mutableListOf<AppLog>()
         getEventsMap(usageStatsManager).forEach {
             if (appPackageNames.contains(it.key)) {
                 when (it.value.eventType) {
-                    UsageEvents.Event.MOVE_TO_FOREGROUND -> {
+                    UsageEvents.Event.ACTIVITY_RESUMED -> {
                         getAppDataBy(it.key)?.let { appData ->
-                            logsFound.add(AppLog.factory(appData.title, LocalDateTime.now()))
-                        } ?: run {  // log anyway
-                            logsFound.add(AppLog.factory(it.key, LocalDateTime.now()))
+
+                            // TODO ignore if the same app is already in foreground?
+                            // side-effect if app is opened 2 times it's not detected
+                            if (lastAppInForeground?.title != appData.title) {
+                                val detectedAppLog =
+                                    AppLog.factory(appData.title, LocalDateTime.now())
+                                logsFound.add(detectedAppLog)
+                                lastAppInForeground = detectedAppLog
+                            }
                         }
                     }
                 }
             }
         }
-        if (logsFound.isNotEmpty()) lastLogs.value = logsFound
+        if (logsFound.isNotEmpty())
+            FileUtils.saveLogsToFile(getApplication(), logsFound)
     }
 
     private fun getAppDataBy(packageName: String): SelectableAppData? {

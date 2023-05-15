@@ -72,6 +72,13 @@ class AppSelectionActivity : AppCompatActivity(),
         loadAppList()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        // clear file before start logging
+        appsViewModel.clearFile()
+    }
+
     // Get app list from specific class into on demand module
     // (cannot access directly cause this module doesn't have dependency)
     private fun loadAppList() {

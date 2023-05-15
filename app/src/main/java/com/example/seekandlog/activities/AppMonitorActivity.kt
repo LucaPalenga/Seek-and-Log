@@ -8,6 +8,9 @@ import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seekandlog.R
 import com.example.seekandlog.adapters.AppLogsAdapter
@@ -16,6 +19,7 @@ import com.example.seekandlog.objs.SelectableAppData
 import com.example.seekandlog.objs.SelectableAppsWrapper
 import com.example.seekandlog.viewmodels.MonitorViewModel
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import kotlinx.coroutines.launch
 
 
 class AppMonitorActivity : AppCompatActivity() {
@@ -52,8 +56,12 @@ class AppMonitorActivity : AppCompatActivity() {
         binding.rvLogs.addItemDecoration(MaterialDividerItemDecoration(this, LinearLayout.VERTICAL))
         binding.rvLogs.adapter = logsAdapter
 
-        viewModel.lastLogs.observe(this) {
-            logsAdapter.addLogs(it)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.lastLogs.collect {
+                    logsAdapter.logs = it.toMutableList()
+                }
+            }
         }
 
         val usageStatsManager = getSystemService(USAGE_STATS_SERVICE) as? UsageStatsManager
@@ -65,5 +73,10 @@ class AppMonitorActivity : AppCompatActivity() {
                 .setMessage(R.string.usage_stats_service_error)
                 .show()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.getLogs()
     }
 }
