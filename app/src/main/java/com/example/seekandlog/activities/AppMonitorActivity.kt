@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seekandlog.R
 import com.example.seekandlog.adapters.AppLogsAdapter
 import com.example.seekandlog.databinding.AppMonitorActivityBinding
-import com.example.seekandlog.objs.SelectableAppData
+import com.example.seekandlog.objs.SelectableAppDescription
 import com.example.seekandlog.objs.SelectableAppsWrapper
 import com.example.seekandlog.viewmodels.MonitorViewModel
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -27,7 +27,7 @@ class AppMonitorActivity : AppCompatActivity() {
     companion object {
         const val SELECTABLE_APPS_TAG = "selectableApps"
 
-        fun buildIntent(context: Context, apps: List<SelectableAppData>?) =
+        fun buildIntent(context: Context, apps: List<SelectableAppDescription>?) =
             Intent(context, AppMonitorActivity::class.java).apply {
                 apps?.let {
                     val bundle = Bundle()
@@ -48,9 +48,10 @@ class AppMonitorActivity : AppCompatActivity() {
         setTitle(R.string.monitor_activity_title)
         setContentView(binding.root)
 
-        val selectableAppsWrapper =
-            intent.extras?.getParcelable(SELECTABLE_APPS_TAG) as? SelectableAppsWrapper
-        viewModel.selectedApps = selectableAppsWrapper?.apps
+        (intent.extras?.getParcelable(SELECTABLE_APPS_TAG) as? SelectableAppsWrapper)
+            ?.apps?.let {
+                viewModel.setSelectedApps(it)
+            }
 
         binding.rvLogs.layoutManager = LinearLayoutManager(this)
         binding.rvLogs.addItemDecoration(MaterialDividerItemDecoration(this, LinearLayout.VERTICAL))
@@ -77,6 +78,6 @@ class AppMonitorActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.getLogs()
+        viewModel.updateLogs()
     }
 }

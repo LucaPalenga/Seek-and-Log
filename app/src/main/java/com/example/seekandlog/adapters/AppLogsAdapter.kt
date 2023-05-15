@@ -28,11 +28,6 @@ class AppLogsAdapter : RecyclerView.Adapter<AppLogsAdapter.AppLogsViewHolder>() 
         return logs.size
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun addLogs(appLogs: List<AppLog>) {
-        logs.addAll(appLogs)
-        notifyDataSetChanged()
-    }
 
     class AppLogsViewHolder(private val binding: AppLogViewHolderBinding) :
         RecyclerView.ViewHolder(binding.root) {

@@ -7,12 +7,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seekandlog.FileUtils
 import com.example.seekandlog.objs.AppLog
-import com.example.seekandlog.objs.SelectableAppData
+import com.example.seekandlog.objs.SelectableAppDescription
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+/**
+ * view model used by AppMonitorActivity
+ * it uses an infinite loop to monitor the apps selected previously
+ * and record writing logs into file when these apps come to foreground
+ */
 class MonitorViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
@@ -20,17 +25,21 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
         const val EVENTS_DETECTION_INTERVAL = 1000 * 1000 // interval (in the past)
     }
 
-    var selectedApps: List<SelectableAppData>? = null
-    var lastLogs = MutableStateFlow<List<AppLog>>(mutableListOf())
-    var lastAppInForeground: AppLog? = null
+    private val mapAppPkgTitles: HashMap<String, String> = hashMapOf()
+    private var lastAppResumed: AppLog? = null
 
-    private val appPackageNames: List<String?>
-        get() = selectedApps?.map { it.packageName } ?: listOf()
+    var lastLogs = MutableStateFlow<List<AppLog>>(mutableListOf())
+
+    fun setSelectedApps(selectedApps: List<SelectableAppDescription>) {
+        selectedApps.forEach { appDesc ->
+            appDesc.packageName?.let { pkg -> mapAppPkgTitles[pkg] = appDesc.title }
+        }
+    }
 
     // a kind of "polling" on selected apps
     fun startLogging(usageStatsManager: UsageStatsManager) {
-        viewModelScope.launch {
-            selectedApps?.get(0)?.let {
+        if (mapAppPkgTitles.isNotEmpty()) {
+            viewModelScope.launch {
                 while (true) {
                     detectForegroundApps(usageStatsManager)
                     delay(POLLING_DELAY)
@@ -39,8 +48,10 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getLogs() {
+    fun updateLogs() {
         lastLogs.value = FileUtils.readLogsFromFile(getApplication())
+        // reset last app resumed to be able to log also the same app when come back to this activity
+        lastAppResumed = null
     }
 
     // extract events (using hashmap to avoid repetitions)
@@ -65,18 +76,18 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
     private fun detectForegroundApps(usageStatsManager: UsageStatsManager) {
         val logsFound = mutableListOf<AppLog>()
         getEventsMap(usageStatsManager).forEach {
-            if (appPackageNames.contains(it.key)) {
+            if (mapAppPkgTitles.contains(it.key)) {
                 when (it.value.eventType) {
                     UsageEvents.Event.ACTIVITY_RESUMED -> {
-                        getAppDataBy(it.key)?.let { appData ->
+                        mapAppPkgTitles[it.key]?.let { appTitle ->
 
                             // TODO ignore if the same app is already in foreground?
                             // side-effect if app is opened 2 times it's not detected
-                            if (lastAppInForeground?.title != appData.title) {
+                            if (lastAppResumed?.title != appTitle) {
                                 val detectedAppLog =
-                                    AppLog.factory(appData.title, LocalDateTime.now())
+                                    AppLog.factory(appTitle, LocalDateTime.now())
                                 logsFound.add(detectedAppLog)
-                                lastAppInForeground = detectedAppLog
+                                lastAppResumed = detectedAppLog
                             }
                         }
                     }
@@ -85,16 +96,5 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
         }
         if (logsFound.isNotEmpty())
             FileUtils.saveLogsToFile(getApplication(), logsFound)
-    }
-
-    private fun getAppDataBy(packageName: String): SelectableAppData? {
-        var rt: SelectableAppData? = null
-        selectedApps?.forEach {
-            if (it.packageName == packageName) {
-                rt = it
-                return@forEach
-            }
-        }
-        return rt
     }
 }

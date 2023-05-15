@@ -37,7 +37,7 @@ class SelectableAppsAdapter :
 
         fun bind(app: SelectableApp, onSelectionChanged: () -> Unit) {
             binding.logo.setImageDrawable(app.logo)
-            binding.title.text = app.data.title
+            binding.title.text = app.description.title
             binding.checkBox.isChecked = app.selected
 
             binding.checkBox.setOnClickListener {

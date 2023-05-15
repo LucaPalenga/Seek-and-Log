@@ -3,7 +3,7 @@ package com.example.seekappfeature
 import android.content.pm.PackageManager
 import com.example.seekandlog.interfaces.IListApps
 import com.example.seekandlog.objs.SelectableApp
-import com.example.seekandlog.objs.SelectableAppData
+import com.example.seekandlog.objs.SelectableAppDescription
 
 class ListApps : IListApps {
     override fun getApps(packageManager: PackageManager): List<SelectableApp> {
@@ -13,7 +13,7 @@ class ListApps : IListApps {
             appList.add(
                 SelectableApp(
                     logo = packageManager.getApplicationIcon(it),
-                    data = SelectableAppData(
+                    description = SelectableAppDescription(
                         title = packageManager.getApplicationLabel(it).toString(),
                         packageName = it.packageName
                     )
