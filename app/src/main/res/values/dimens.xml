@@ -4,6 +4,11 @@
     <dimen name="default_half_margin">8dp</dimen>
     <dimen name="default_margin">16dp</dimen>
     <dimen name="default_half_padding">8dp</dimen>
+    <dimen name="default_min_padding">4dp</dimen>
     <dimen name="default_padding">16dp</dimen>
     <dimen name="log_app_title">20sp</dimen>
+    <dimen name="app_logo_min_size">12dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="chip_inset_divider">3dp</dimen>
+    <dimen name="divider_size_height">1dp</dimen>
 </resources>

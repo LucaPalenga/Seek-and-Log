@@ -15,8 +15,8 @@ import java.io.FileOutputStream
 object FileUtils {
 
     const val FILE_NAME = "appLogs.txt"
-    const val LOGS_LINE_SEPARATOR = "\n"
-    const val LOG_VALUES_SEPARATOR = ","
+    const val LOGS_LINE_SEPARATOR = '\n'
+    const val LOG_VALUES_SEPARATOR = ','
     const val EMPTY_STRING = ""
 
     /**
@@ -53,7 +53,7 @@ object FileUtils {
             }
 
             buffer.split(LOGS_LINE_SEPARATOR).forEach {
-                rt.add(AppLog.factory(it))
+                AppLog.factory(it)?.let { appLog -> rt.add(appLog) }
             }
         } catch (e: Exception) {
             e.printStackTrace()

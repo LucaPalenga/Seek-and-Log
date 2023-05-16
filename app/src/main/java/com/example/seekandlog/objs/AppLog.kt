@@ -22,15 +22,40 @@ data class AppLog(
             )
         }
 
-        fun factory(fileLine: String): AppLog {
-            val logString = fileLine.split(FileUtils.LOG_VALUES_SEPARATOR)
-            return AppLog(
-                logString[0].trim(),   // title
-                logString[1].trim(),   // date
-                logString[2].trim()    // time
-            )
+        fun factory(fileLine: String): AppLog? {
+            val logString = fileLine
+                .split(FileUtils.LOG_VALUES_SEPARATOR)
+                .filter { it != FileUtils.EMPTY_STRING }
+
+            if (logString.isNotEmpty())
+                return AppLog(
+                    logString[StringIndexes.TITLE_INDEX.ordinal].trim(),
+                    logString[StringIndexes.DATE_INDEX.ordinal].trim(),
+                    logString[StringIndexes.TIME_INDEX.ordinal].trim()
+                )
+            return null
         }
     }
 
-    fun getStringForFile() = "$title, $date, $time\n"
+    fun getStringForFile(): String {
+        val rt = StringBuilder()
+
+        StringIndexes.values().forEach {
+            val field = when (it) {
+                StringIndexes.TITLE_INDEX -> title.trim()
+                StringIndexes.DATE_INDEX -> date.trim()
+                StringIndexes.TIME_INDEX -> time.trim()
+            }
+            rt.append(field).append(FileUtils.LOG_VALUES_SEPARATOR)
+        }
+
+        if (rt.lastOrNull() == (FileUtils.LOG_VALUES_SEPARATOR)) {
+            rt.deleteCharAt(rt.lastIndex)
+        }
+        rt.append(FileUtils.LOGS_LINE_SEPARATOR)
+
+        return rt.toString()
+    }
 }
+
+enum class StringIndexes { TITLE_INDEX, DATE_INDEX, TIME_INDEX }

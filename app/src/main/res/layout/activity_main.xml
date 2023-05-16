@@ -4,6 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/load_module_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_margin"
+        android:text="@string/load_module_string"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@id/load_module_btn" />
+
     <Button
         android:id="@+id/load_module_btn"
         android:layout_width="wrap_content"
@@ -18,7 +27,7 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/default_margin"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@id/load_module_btn"
         app:layout_constraintStart_toStartOf="@id/load_module_btn"

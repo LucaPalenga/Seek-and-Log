@@ -9,5 +9,5 @@ import com.example.seekandlog.objs.SelectableApp
  * letting do the work by external classes
  */
 interface IListApps {
-    fun getApps(packageManager: PackageManager): List<SelectableApp>
+    fun getApps(packageManager: PackageManager, sorted: Boolean): List<SelectableApp>
 }

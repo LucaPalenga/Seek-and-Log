@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.seekandlog.FileUtils
 import com.example.seekandlog.objs.AppLog
@@ -21,16 +22,18 @@ import java.time.LocalDateTime
 class MonitorViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
-        const val POLLING_DELAY = 2000L   // acceptable delay for polling
-        const val EVENTS_DETECTION_INTERVAL = 1000 * 1000 // interval (in the past)
+        const val POLLING_DELAY = 500L   // acceptable delay for polling
+        const val EVENTS_DETECTION_INTERVAL = 1000 // interval (in the past)
     }
 
+    val monitoredApps = MutableLiveData<List<SelectableAppDescription>>()
     private val mapAppPkgTitles: HashMap<String, String> = hashMapOf()
     private var lastAppResumed: AppLog? = null
 
     var lastLogs = MutableStateFlow<List<AppLog>>(mutableListOf())
 
     fun setSelectedApps(selectedApps: List<SelectableAppDescription>) {
+        monitoredApps.value = selectedApps
         selectedApps.forEach { appDesc ->
             appDesc.packageName?.let { pkg -> mapAppPkgTitles[pkg] = appDesc.title }
         }
@@ -58,9 +61,8 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
     private fun getEventsMap(usageStatsManager: UsageStatsManager): Map<String, UsageEvents.Event> {
         val rt = hashMapOf<String, UsageEvents.Event>()
 
-        val interval = EVENTS_DETECTION_INTERVAL
         val end = System.currentTimeMillis()
-        val begin = end - interval
+        val begin = end - EVENTS_DETECTION_INTERVAL
         val usageEvents = usageStatsManager.queryEvents(begin, end);
 
         while (usageEvents.hasNextEvent()) {

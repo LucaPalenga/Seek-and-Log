@@ -1,11 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/monitored_apps_lbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_half_margin"
+        android:paddingHorizontal="@dimen/default_half_padding"
+        android:text="@string/monitoring_apps"
+        android:textStyle="italic|bold"
+        app:layout_constraintBottom_toTopOf="@id/rv_monitored_apps"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_monitored_apps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintTop_toTopOf="@id/monitored_apps_lbl" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_size_height"
+        android:layout_margin="@dimen/default_margin"
+        android:background="?attr/colorOnSecondary"
+        app:layout_constraintBottom_toTopOf="@id/logs_lbl"
+        app:layout_constraintTop_toBottomOf="@id/rv_monitored_apps" />
+
+    <TextView
+        android:id="@+id/logs_lbl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/default_half_padding"
+        android:text="@string/detected_logs"
+        android:textStyle="italic|bold"
+        app:layout_constraintBottom_toTopOf="@id/rv_logs"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_logs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logs_lbl" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/date_lbl"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Ciao" />
+        tools:text="App Title" />
 
     <TextView
         android:id="@+id/date_lbl"
@@ -23,6 +23,8 @@
         android:text="@string/date"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/time_lbl"
+        app:layout_constraintEnd_toStartOf="@id/date"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_title" />
 
     <TextView
@@ -43,6 +45,8 @@
         android:text="@string/time"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/time"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_lbl" />
 
     <TextView

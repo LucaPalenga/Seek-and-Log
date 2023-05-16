@@ -11,12 +11,12 @@ import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seekandlog.R
 import com.example.seekandlog.adapters.SelectableAppsAdapter
 import com.example.seekandlog.databinding.AppSelectionActivityBinding
-import com.example.seekandlog.interfaces.IListApps
 import com.example.seekandlog.viewmodels.AppSelectionViewModel
 import com.google.android.material.divider.MaterialDividerItemDecoration
 
@@ -46,6 +46,15 @@ class AppSelectionActivity : AppCompatActivity(),
         binding.rvApps.addItemDecoration(MaterialDividerItemDecoration(this, LinearLayout.VERTICAL))
         binding.rvApps.adapter = appsAdapter
 
+        binding.searchView.setOnQueryTextListener(object : OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean = false
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                appsAdapter.filter(newText)
+                return true
+            }
+        })
+
         appsViewModel.appList.observe(this) {
             appsAdapter.apps = it
         }
@@ -68,31 +77,11 @@ class AppSelectionActivity : AppCompatActivity(),
                     .show()
             }
         }
-
-        loadAppList()
     }
 
     override fun onStart() {
         super.onStart()
-
-        // clear file before start logging
-        appsViewModel.clearFile()
-    }
-
-    // Get app list from specific class into on demand module
-    // (cannot access directly cause this module doesn't have dependency)
-    private fun loadAppList() {
-        try {
-            val listAppsClass = (Class.forName(AppSelectionViewModel.FEATURE_LIST_APPS_CLASS_NAME)
-                .newInstance() as? IListApps)
-            listAppsClass?.getApps(packageManager)?.let { appsViewModel.setAppList(it) }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            AlertDialog.Builder(this)
-                .setTitle(R.string.error)
-                .setMessage(R.string.error_load_apps)
-                .show()
-        }
+        appsViewModel.clearFile()   // clear file before start logging
     }
 
     // Check PACKAGE_USAGE_STATS permission. It cannot be requested (it's a special permission)

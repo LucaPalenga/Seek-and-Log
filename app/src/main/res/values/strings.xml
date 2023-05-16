@@ -17,4 +17,8 @@
     <string name="permission_not_allowed">Permission not allowed</string>
     <string name="permission_not_allowed_msg"><![CDATA[To active it: \nSettings > Apps > Special app access > Usage access]]></string>
     <string name="usage_stats_service_error">Usage stats service error</string>
+    <string name="search_view_hint">App title</string>
+    <string name="monitoring_apps">Monitoring apps</string>
+    <string name="detected_logs">Detected logs</string>
+    <string name="load_module_string">Click the button below to install the on-demand module and start monitoring installed apps on this device!</string>
 </resources>

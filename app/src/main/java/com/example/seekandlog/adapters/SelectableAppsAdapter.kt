@@ -15,7 +15,14 @@ class SelectableAppsAdapter :
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
-            notifyDataSetChanged()  //TODO DiffUtil
+            filteredApps = value
+        }
+
+    private var filteredApps: List<SelectableApp> = listOf()
+        @SuppressLint("NotifyDataSetChanged")
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
 
     var onAppSelectionListener: OnAppSelectionChangedCallback? = null
@@ -25,12 +32,20 @@ class SelectableAppsAdapter :
     }
 
     override fun onBindViewHolder(holder: SelectableAppsViewHolder, position: Int) {
-        holder.bind(apps[position]) { onAppSelectionListener?.onAppSelectionChanged() }
+        holder.bind(filteredApps[position]) { onAppSelectionListener?.onAppSelectionChanged() }
     }
 
     override fun getItemCount(): Int {
-        return apps.size
+        return filteredApps.size
     }
+
+    fun filter(constraints: String?) {
+        constraints?.let {
+            filteredApps =
+                apps.filter { it.description.title.lowercase().contains(constraints.lowercase()) }
+        } ?: run { filteredApps = apps }
+    }
+
 
     class SelectableAppsViewHolder(private val binding: SelectableAppsViewHolderBinding) :
         ViewHolder(binding.root) {

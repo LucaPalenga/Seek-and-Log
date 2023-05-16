@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.seekandlog.R
 import com.example.seekandlog.adapters.AppLogsAdapter
+import com.example.seekandlog.adapters.MonitoredAppsAdapter
 import com.example.seekandlog.databinding.AppMonitorActivityBinding
 import com.example.seekandlog.objs.SelectableAppDescription
 import com.example.seekandlog.objs.SelectableAppsWrapper
@@ -40,6 +41,7 @@ class AppMonitorActivity : AppCompatActivity() {
     private val binding: AppMonitorActivityBinding
             by lazy { AppMonitorActivityBinding.inflate(layoutInflater) }
     private val logsAdapter = AppLogsAdapter()
+    private val monitoredAppsAdapter = MonitoredAppsAdapter()
 
     private val viewModel: MonitorViewModel by viewModels()
 
@@ -53,9 +55,17 @@ class AppMonitorActivity : AppCompatActivity() {
                 viewModel.setSelectedApps(it)
             }
 
+        binding.rvMonitoredApps.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.rvMonitoredApps.adapter = monitoredAppsAdapter
+
         binding.rvLogs.layoutManager = LinearLayoutManager(this)
         binding.rvLogs.addItemDecoration(MaterialDividerItemDecoration(this, LinearLayout.VERTICAL))
         binding.rvLogs.adapter = logsAdapter
+
+        viewModel.monitoredApps.observe(this) {
+            monitoredAppsAdapter.monitoredApps = it
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
