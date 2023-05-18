@@ -1,6 +1,7 @@
 package com.example.seekappfeature
 
 import android.content.pm.PackageManager
+import android.os.Build
 import com.example.seekandlog.interfaces.IListApps
 import com.example.seekandlog.objs.SelectableApp
 import com.example.seekandlog.objs.SelectableAppDescription
@@ -16,7 +17,14 @@ class ListApps : IListApps {
     ): List<SelectableApp> {
         val appList = mutableListOf<SelectableApp>()
 
-        packageManager.getInstalledApplications(PackageManager.INSTALL_REASON_UNKNOWN).map {
+        val extractedApps = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getInstalledPackages(PackageManager.PackageInfoFlags.of(PackageManager.INSTALL_REASON_UNKNOWN.toLong()))
+                .map { it.applicationInfo }
+        } else {
+            packageManager.getInstalledApplications(PackageManager.INSTALL_REASON_UNKNOWN)
+        }
+
+        extractedApps.map {
             appList.add(
                 SelectableApp(
                     logo = packageManager.getApplicationIcon(it),

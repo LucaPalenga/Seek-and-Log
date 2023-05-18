@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SeekAndLog</string>
+    <string name="app_name">Seek and Log</string>
     <string name="seekappfeature_name">seekappfeature</string>
     <string name="load_module">Load module</string>
     <string name="module_not_installed">Module not installed</string>
@@ -15,10 +15,15 @@
     <string name="time">Time:</string>
     <string name="monitor_activity_title">Apps monitoring</string>
     <string name="permission_not_allowed">Permission not allowed</string>
-    <string name="permission_not_allowed_msg"><![CDATA[To active it: \nSettings > Apps > Special app access > Usage access]]></string>
+    <string name="permission_not_allowed_msg">Do you want to active usage access permission?</string>
     <string name="usage_stats_service_error">Usage stats service error</string>
     <string name="search_view_hint">App title</string>
     <string name="monitoring_apps">Monitoring apps</string>
     <string name="detected_logs">Detected logs</string>
     <string name="load_module_string">Click the button below to install the on-demand module and start monitoring installed apps on this device!</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="stop_start_btn_description">Stop/Play</string>
+    <string name="monitor_started">Monitor started</string>
+    <string name="monitor_stopped">Monitor stopped</string>
 </resources>

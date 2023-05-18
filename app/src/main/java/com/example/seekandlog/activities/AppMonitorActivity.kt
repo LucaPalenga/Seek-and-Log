@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -67,6 +69,23 @@ class AppMonitorActivity : AppCompatActivity() {
             monitoredAppsAdapter.monitoredApps = it
         }
 
+        viewModel.stopMonitoring.observe(this) { stopped ->
+            if (stopped) {
+                binding.stopStartBtn.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.play)
+                )
+                Toast.makeText(this, R.string.monitor_stopped, Toast.LENGTH_SHORT).show()
+            } else {
+                binding.stopStartBtn.setImageDrawable(
+                    ContextCompat.getDrawable(this, R.drawable.pause)
+                )
+                Toast.makeText(this, R.string.monitor_started, Toast.LENGTH_SHORT).show()
+                startMonitor()
+            }
+        }
+
+        binding.stopStartBtn.setOnClickListener { viewModel.toggleMonitoring() }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.lastLogs.collect {
@@ -74,7 +93,14 @@ class AppMonitorActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.updateLogs()
+    }
+
+    private fun startMonitor() {
         val usageStatsManager = getSystemService(USAGE_STATS_SERVICE) as? UsageStatsManager
         usageStatsManager?.let {
             viewModel.startLogging(it)
@@ -84,10 +110,5 @@ class AppMonitorActivity : AppCompatActivity() {
                 .setMessage(R.string.usage_stats_service_error)
                 .show()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.updateLogs()
     }
 }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.seekandlog.FileUtils
@@ -30,6 +31,10 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
     private val mapAppPkgTitles: HashMap<String, String> = hashMapOf()
     private var lastAppResumed: AppLog? = null
 
+    private val _stopMonitoring = MutableLiveData(false)
+    val stopMonitoring: LiveData<Boolean>
+        get() = _stopMonitoring
+
     var lastLogs = MutableStateFlow<List<AppLog>>(mutableListOf())
 
     fun setSelectedApps(selectedApps: List<SelectableAppDescription>) {
@@ -43,7 +48,7 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
     fun startLogging(usageStatsManager: UsageStatsManager) {
         if (mapAppPkgTitles.isNotEmpty()) {
             viewModelScope.launch {
-                while (true) {
+                while (stopMonitoring.value == false) {
                     detectForegroundApps(usageStatsManager)
                     delay(POLLING_DELAY)
                 }
@@ -98,5 +103,9 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
         }
         if (logsFound.isNotEmpty())
             FileUtils.saveLogsToFile(getApplication(), logsFound)
+    }
+
+    fun toggleMonitoring() {
+        _stopMonitoring.value = _stopMonitoring.value != true
     }
 }

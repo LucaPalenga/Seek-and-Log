@@ -14,4 +14,6 @@
     <color name="hack_blue">#48acf0</color>
     <color name="hack_blue_dark">#003459</color>
     <color name="hack_grey">#93a3bc</color>
+
+    <color name="vivid_sky_blue">#2AC7DF</color>
 </resources>

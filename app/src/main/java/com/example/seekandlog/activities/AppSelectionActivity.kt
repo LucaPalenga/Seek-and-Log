@@ -5,8 +5,10 @@ import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Process.myUid
+import android.provider.Settings
 import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -74,6 +76,10 @@ class AppSelectionActivity : AppCompatActivity(),
                 AlertDialog.Builder(this)
                     .setTitle(R.string.permission_not_allowed)
                     .setMessage(R.string.permission_not_allowed_msg)
+                    .setPositiveButton(R.string.ok) { _, _ ->
+                        startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                    }
+                    .setNegativeButton(R.string.cancel, null)
                     .show()
             }
         }
@@ -90,7 +96,19 @@ class AppSelectionActivity : AppCompatActivity(),
     private fun checkUsageStatsPermission(): Boolean {
         val appOpsManager = getSystemService(APP_OPS_SERVICE) as? AppOpsManager
         val mode =
-            appOpsManager?.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, myUid(), packageName)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                appOpsManager?.unsafeCheckOpNoThrow(
+                    AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    myUid(),
+                    packageName
+                )
+            } else {
+                appOpsManager?.checkOpNoThrow(
+                    AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    myUid(),
+                    packageName
+                )
+            }
 
         return if (mode == AppOpsManager.MODE_DEFAULT)
             checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) === PackageManager.PERMISSION_GRANTED

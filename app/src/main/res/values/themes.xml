@@ -3,11 +3,11 @@
     <style name="Theme.SeekAndLog" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/hack_blue_dark</item>
-        <item name="colorPrimaryVariant">@color/hack_blue</item>
-        <item name="colorOnPrimary">@color/hack_green</item>
+        <item name="colorPrimaryVariant">@color/hack_blue_dark</item>
+        <item name="colorOnPrimary">@color/vivid_sky_blue</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/hack_red</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/hack_grey</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
