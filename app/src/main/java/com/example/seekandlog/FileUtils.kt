@@ -14,10 +14,9 @@ import java.io.FileOutputStream
  */
 object FileUtils {
 
-    const val FILE_NAME = "appLogs.txt"
     const val LOGS_LINE_SEPARATOR = '\n'
     const val LOG_VALUES_SEPARATOR = ','
-    const val EMPTY_STRING = ""
+
 
     /**
      * Writes logs to file
@@ -26,7 +25,7 @@ object FileUtils {
      */
     fun saveLogsToFile(context: Context, appLogs: List<AppLog>) {
         try {
-            val fOut: FileOutputStream = context.openFileOutput(FILE_NAME, MODE_APPEND)
+            val fOut: FileOutputStream = context.openFileOutput(Values.LOGS_FILE_NAME, MODE_APPEND)
             appLogs.forEach {
                 fOut.write(it.getStringForFile().toByteArray())
             }
@@ -45,9 +44,9 @@ object FileUtils {
         val rt = mutableListOf<AppLog>()
 
         try {
-            val fileInput = context.openFileInput(FILE_NAME)
+            val fileInput = context.openFileInput(Values.LOGS_FILE_NAME)
             var nextByteData: Int
-            var buffer = EMPTY_STRING
+            var buffer = Values.EMPTY_STRING
             while (fileInput.read().also { nextByteData = it } != -1) {
                 buffer += nextByteData.toChar().toString()
             }
@@ -66,8 +65,8 @@ object FileUtils {
      * Clear the log file
      */
     fun clearFile(context: Context) {
-        val fOut = context.openFileOutput(FILE_NAME, MODE_PRIVATE)
-        fOut.write(EMPTY_STRING.toByteArray())
+        val fOut = context.openFileOutput(Values.LOGS_FILE_NAME, MODE_PRIVATE)
+        fOut.write(Values.EMPTY_STRING.toByteArray())
         fOut.close()
     }
 }

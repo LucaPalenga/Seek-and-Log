@@ -1,6 +1,7 @@
 package com.example.seekandlog.objs
 
 import com.example.seekandlog.FileUtils
+import com.example.seekandlog.Values
 import java.time.LocalDateTime
 
 /**
@@ -25,7 +26,7 @@ data class AppLog(
         fun factory(fileLine: String): AppLog? {
             val logString = fileLine
                 .split(FileUtils.LOG_VALUES_SEPARATOR)
-                .filter { it != FileUtils.EMPTY_STRING }
+                .filter { it != Values.EMPTY_STRING }
 
             if (logString.isNotEmpty())
                 return AppLog(
