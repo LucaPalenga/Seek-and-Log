@@ -4,7 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import com.example.seekandlog.interfaces.IListApps
 import com.example.seekandlog.objs.SelectableApp
-import com.example.seekandlog.objs.SelectableAppDescription
+import com.example.seekandlog.objs.SelectableAppInfo
 
 /**
  * this class extract installed applications on device
@@ -28,7 +28,8 @@ class ListApps : IListApps {
             appList.add(
                 SelectableApp(
                     logo = packageManager.getApplicationIcon(it),
-                    description = SelectableAppDescription(
+                    info = SelectableAppInfo(
+                        uid = it.uid,
                         title = packageManager.getApplicationLabel(it).toString(),
                         packageName = it.packageName
                     )
@@ -38,8 +39,8 @@ class ListApps : IListApps {
 
         return if (sorted)
             appList.sortedWith(Comparator { s1, s2 ->
-                return@Comparator s1.description.title.lowercase()
-                    .compareTo(s2.description.title.lowercase())
+                return@Comparator s1.info.title.lowercase()
+                    .compareTo(s2.info.title.lowercase())
             })
         else appList
     }

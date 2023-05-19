@@ -9,7 +9,7 @@ import com.example.seekandlog.ListAppsProvider
 import com.example.seekandlog.R
 import com.example.seekandlog.interfaces.IListApps
 import com.example.seekandlog.objs.SelectableApp
-import com.example.seekandlog.objs.SelectableAppDescription
+import com.example.seekandlog.objs.SelectableAppInfo
 
 /**
  * view model used by AppSelectionActivity
@@ -20,7 +20,7 @@ class AppSelectionViewModel(application: Application) : AndroidViewModel(applica
     private var listApps: IListApps? = ListAppsProvider.provide()
 
     val appList = MutableLiveData<List<SelectableApp>>()
-    val selectedApps = MutableLiveData<List<SelectableAppDescription>>()
+    val selectedApps = MutableLiveData<List<SelectableAppInfo>>()
 
     init {
         // Load apps from provided dependency
@@ -36,7 +36,7 @@ class AppSelectionViewModel(application: Application) : AndroidViewModel(applica
 
     fun updateSelectedApps() {
         selectedApps.value =
-            appList.value?.filter { it.selected }?.map { it.description } ?: listOf()
+            appList.value?.filter { it.selected }?.map { it.info } ?: listOf()
     }
 
     fun clearFile() {

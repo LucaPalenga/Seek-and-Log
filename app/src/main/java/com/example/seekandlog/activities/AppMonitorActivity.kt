@@ -18,7 +18,7 @@ import com.example.seekandlog.R
 import com.example.seekandlog.adapters.AppLogsAdapter
 import com.example.seekandlog.adapters.MonitoredAppsAdapter
 import com.example.seekandlog.databinding.AppMonitorActivityBinding
-import com.example.seekandlog.objs.SelectableAppDescription
+import com.example.seekandlog.objs.SelectableAppInfo
 import com.example.seekandlog.objs.SelectableAppsWrapper
 import com.example.seekandlog.viewmodels.MonitorViewModel
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -30,7 +30,7 @@ class AppMonitorActivity : AppCompatActivity() {
     companion object {
         const val SELECTABLE_APPS_TAG = "selectableApps"
 
-        fun buildIntent(context: Context, apps: List<SelectableAppDescription>?) =
+        fun buildIntent(context: Context, apps: List<SelectableAppInfo>?) =
             Intent(context, AppMonitorActivity::class.java).apply {
                 apps?.let {
                     val bundle = Bundle()

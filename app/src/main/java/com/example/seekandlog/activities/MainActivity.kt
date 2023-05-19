@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             when (it.status()) {
 
                 SplitInstallSessionStatus.INSTALLED -> {
-                    binding.loadModuleBtn.text = getString(R.string.download_completed)
+                    binding.loadModuleBtn.text = getString(R.string.install_completed)
                     binding.loadModuleBtn.isEnabled = false
 
                     if (splitInstallManager.installedModules.contains(dynamicFeatureName)) {
@@ -43,10 +43,12 @@ class MainActivity : AppCompatActivity() {
                             .show()
                     }
                 }
+
                 SplitInstallSessionStatus.DOWNLOADING -> {
                     binding.progressBar.isVisible = true
                     binding.loadModuleBtn.text = getString(R.string.downloading)
                 }
+
                 SplitInstallSessionStatus.DOWNLOADED -> {
                     Toast.makeText(
                         applicationContext,
@@ -54,13 +56,18 @@ class MainActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+
                 SplitInstallSessionStatus.FAILED -> {
                     Toast.makeText(
                         applicationContext,
                         getString(R.string.download_failed),
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    resetLoadBtn()
+
                 }
+
                 else -> {
                     resetLoadBtn()
                 }

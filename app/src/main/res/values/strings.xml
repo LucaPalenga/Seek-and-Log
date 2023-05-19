@@ -4,8 +4,9 @@
     <string name="load_module">Load module</string>
     <string name="module_not_installed">Module not installed</string>
     <string name="select_apps_to_monitor">Select apps you want to monitor</string>
-    <string name="downloading">Downloading...</string>
+    <string name="downloading">Downloading…</string>
     <string name="download_completed">Download completed</string>
+    <string name="install_completed">Install completed</string>
     <string name="download_failed">Download failed</string>
     <string name="installing_module">Installing module</string>
     <string name="start_log">Start log!</string>
@@ -21,7 +22,7 @@
     <string name="monitoring_apps">Monitoring apps</string>
     <string name="detected_logs">Detected logs</string>
     <string name="load_module_string">Click the button below to install the on-demand module and start monitoring installed apps on this device!</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="stop_start_btn_description">Stop/Play</string>
     <string name="monitor_started">Monitor started</string>

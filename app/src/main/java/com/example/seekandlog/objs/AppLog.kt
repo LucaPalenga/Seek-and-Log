@@ -10,14 +10,16 @@ import java.time.LocalDateTime
  * @date/time the date/time when the app use is detected
  */
 data class AppLog(
+    val uid: Int,
     val title: String,
     val date: String,
     val time: String
 ) {
     companion object {
-        fun factory(packageName: String, dateTime: LocalDateTime): AppLog {
+        fun factory(appInfo: SelectableAppInfo, dateTime: LocalDateTime): AppLog {
             return AppLog(
-                packageName,
+                appInfo.uid,
+                appInfo.title,
                 dateTime.toLocalDate().toString(),
                 dateTime.toLocalTime().toString()
             )
@@ -30,6 +32,7 @@ data class AppLog(
 
             if (logString.isNotEmpty())
                 return AppLog(
+                    logString[StringIndexes.UID_INDEX.ordinal].toInt(),
                     logString[StringIndexes.TITLE_INDEX.ordinal].trim(),
                     logString[StringIndexes.DATE_INDEX.ordinal].trim(),
                     logString[StringIndexes.TIME_INDEX.ordinal].trim()
@@ -43,6 +46,7 @@ data class AppLog(
 
         StringIndexes.values().forEach {
             val field = when (it) {
+                StringIndexes.UID_INDEX -> uid
                 StringIndexes.TITLE_INDEX -> title.trim()
                 StringIndexes.DATE_INDEX -> date.trim()
                 StringIndexes.TIME_INDEX -> time.trim()
@@ -59,4 +63,4 @@ data class AppLog(
     }
 }
 
-enum class StringIndexes { TITLE_INDEX, DATE_INDEX, TIME_INDEX }
+enum class StringIndexes { UID_INDEX, TITLE_INDEX, DATE_INDEX, TIME_INDEX }

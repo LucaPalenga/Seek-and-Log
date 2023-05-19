@@ -8,4 +8,4 @@ import kotlinx.parcelize.Parcelize
  * this is useful for data transfer through Bundle
  */
 @Parcelize
-data class SelectableAppsWrapper(val apps: List<SelectableAppDescription>) : Parcelable
+data class SelectableAppsWrapper(val apps: List<SelectableAppInfo>) : Parcelable

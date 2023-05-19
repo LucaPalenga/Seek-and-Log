@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.seekandlog.databinding.MonitoredAppsViewHolderBinding
-import com.example.seekandlog.objs.SelectableAppDescription
+import com.example.seekandlog.objs.SelectableAppInfo
 
 class MonitoredAppsAdapter : RecyclerView.Adapter<MonitoredAppsAdapter.MonitoredAppsViewHolder>() {
 
-    var monitoredApps: List<SelectableAppDescription> = listOf()
+    var monitoredApps: List<SelectableAppInfo> = listOf()
         @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
@@ -32,7 +32,7 @@ class MonitoredAppsAdapter : RecyclerView.Adapter<MonitoredAppsAdapter.Monitored
     class MonitoredAppsViewHolder(private val binding: MonitoredAppsViewHolderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(appDescription: SelectableAppDescription) {
+        fun bind(appDescription: SelectableAppInfo) {
             binding.title.text = appDescription.title
         }
 
